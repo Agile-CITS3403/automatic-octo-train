@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #4CAF50;
+  --color-secondary: #2196F3;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 min-h-screen flex justify-center p-0 m-0;
+}
+
+.screen {
+  @apply flex flex-col items-center gap-6 w-full max-w-xl bg-white shadow-xl p-8 min-h-screen sm:min-h-[auto] sm:my-8 sm:rounded-2xl;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#paint-canvas {
+  image-rendering: pixelated;
+  @apply bg-white cursor-crosshair shadow-inner;
+  width: 320px;
+  height: 320px;
+}
+
+.canvas-wrapper {
+  @apply relative border-4 border-slate-200 rounded-sm overflow-hidden;
+  width: 320px;
+  height: 320px;
+}
+
+.grid-overlay {
+  @apply absolute inset-0 pointer-events-none;
+  background-image: 
+    linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 10px 10px; /* 320px / 32 = 10px */
+}
+
+.color-btn {
+  @apply w-full aspect-square rounded-lg border-2 border-slate-100 transition-all hover:scale-105 cursor-pointer shadow-sm;
+}
+
+.color-btn.active {
+  @apply border-slate-900 scale-110 shadow-md z-10;
+}
+
+.feed-grid img {
+  image-rendering: pixelated;
+  @apply w-full aspect-square border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow;
+}
