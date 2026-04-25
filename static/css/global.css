@@ -56,13 +56,15 @@ a:hover {
 
 .post-card {
   background-color: #1a214d;
-  width: 100%; /* IMPORTANT */
+  width: 250px; /* IMPORTANT */
+  margin-left: auto;
+  margin-right: auto;
   border-radius: 0 0 25px 25px;
   overflow: hidden;
 }
 
 .img-placeholder {
-  height: 220px;
+  height: 250px;
   background-color: #d9d9d9;
 }
 
