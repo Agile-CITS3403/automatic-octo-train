@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 body {
   background-color: #101019;
   color: white;
@@ -54,6 +56,7 @@ a:hover {
 
 .post-card {
   background-color: #1a214d;
+  width: 100%; /* IMPORTANT */
   border-radius: 0 0 25px 25px;
   overflow: hidden;
 }
@@ -107,4 +110,8 @@ a:hover {
   color: white;
   border-color: #5663b8;
   box-shadow: none;
+}
+
+.masonery-grid{
+  @apply columns-5 gap-4 space-y-4 p-4;
 }
