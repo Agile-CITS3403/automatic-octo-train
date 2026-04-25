@@ -8,6 +8,6 @@
     "dev:css": "npx @tailwindcss/cli -i ./src/style.css -o ./static/css/style.css --watch"
   },
   "devDependencies": {
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.4"
   }
 }
