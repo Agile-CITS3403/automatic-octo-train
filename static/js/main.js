@@ -1,5 +1,3 @@
-import './style.css'
-
 // Elements
 const screenMain = document.getElementById('screen-main');
 const screenDraw = document.getElementById('screen-draw');
