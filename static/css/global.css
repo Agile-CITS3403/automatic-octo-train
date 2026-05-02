@@ -1,5 +1,7 @@
+@import "tailwindcss";
+
 body {
-  background-color: #030417;
+  background-color: #101019;
   color: white;
   font-family: Arial, sans-serif;
   margin: 0;
@@ -30,7 +32,7 @@ a:hover {
 }
 
 .btn-custom {
-  background-color: #1c2554;
+  background-color: #1F2544;
   color: white;
   padding: 10px 18px;
   border-radius: 25px;
@@ -54,12 +56,15 @@ a:hover {
 
 .post-card {
   background-color: #1a214d;
+  width: 250px; /* IMPORTANT */
+  margin-left: auto;
+  margin-right: auto;
   border-radius: 0 0 25px 25px;
   overflow: hidden;
 }
 
 .img-placeholder {
-  height: 220px;
+  height: 250px;
   background-color: #d9d9d9;
 }
 
@@ -107,4 +112,8 @@ a:hover {
   color: white;
   border-color: #5663b8;
   box-shadow: none;
+}
+
+.masonery-grid{
+  @apply columns-5 gap-4 space-y-4 p-4;
 }
