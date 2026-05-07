@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - {{ user.username }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .profile-container { max-width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group textarea { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
+        .btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background-color: #0056b3; }
+        .section { margin-top: 30px; }
+        .nav { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="nav">
+            <a href="{{ url_for('draw') }}">Back to Draw</a> | 
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+        
+        <h1>Profile: {{ user.username }}</h1>
+        <p>Email: {{ user.email }}</p>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="profile_description">Profile Description:</label>
+                <textarea name="profile_description" id="profile_description" rows="5">{{ user.profile_description }}</textarea>
+            </div>
+            <button type="submit" class="btn">Update Profile</button>
+        </form>
+
+        <div class="section">
+            <h3>Owned Pictures</h3>
+            {% if owned_pictures %}
+                <ul>
+                {% for pic_id in owned_pictures %}
+                    <li>Picture ID: {{ pic_id }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No pictures owned yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h3>Likes</h3>
+            {% if likes %}
+                <ul>
+                {% for like_id in likes %}
+                    <li>Liked Item ID: {{ like_id }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No likes yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

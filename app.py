@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -23,6 +24,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
+    owned_pictures_ids = db.Column(db.Text, default='[]')
+    profile_description = db.Column(db.Text, default='')
+    likes = db.Column(db.Text, default='[]')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -89,6 +93,21 @@ def signup():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        current_user.profile_description = request.form.get('profile_description')
+        db.session.commit()
+        flash('Profile updated successfully!')
+        return redirect(url_for('profile'))
+    
+    # Parse JSON strings for display
+    owned_pictures = json.loads(current_user.owned_pictures_ids)
+    likes = json.loads(current_user.likes)
+    
+    return render_template('profile.html', user=current_user, owned_pictures=owned_pictures, likes=likes)
 
 with app.app_context():
     db.create_all()
