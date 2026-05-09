@@ -25,7 +25,7 @@ body {
 }
 
 .canvas-wrapper {
-  @apply relative border-4 border-slate-200 rounded-sm overflow-hidden;
+  @apply relative border-4 border-slate-200 rounded-sm overflow-hidden box-content;
   width: 320px;
   height: 320px;
 }
