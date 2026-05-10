@@ -1,9 +1,10 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
 body {
   background-color: #101019;
   color: white;
-  font-family: Arial, sans-serif;
+  font-family: "Pixelify Sans", sans-serif;
   margin: 0;
 }
 
