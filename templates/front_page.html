@@ -13,18 +13,23 @@
 </head>
 <body>
 
-  <nav class="navbar-custom d-flex justify-content-between align-items-center px-4 py-3">
-    <h1 class="logo m-0">LowResGram</h1>
-    <div>
-      <a href="{{ url_for('login') }}" class="nav-link-custom me-3">Log in</a>
-      <a href="{{ url_for('signup') }}" class="btn-custom">Create account</a>
-    </div>
-  </nav>
 
-  <section class="hero text-center py-5">
-    <h2>Tiny pixels. Big vibes.</h2>
-    <p>Discover chaotic, low-res content made for Gen Z.</p>
-    <a href="{{ url_for('signup') }}" class="btn-custom mt-3 d-inline-block">Get Started</a>
+  <section class="grid place-items-center hero flex flex-col">
+    <img src="../static/images/logo_image.svg" width="160" height="160" class = "absolute left-[150px] top-[100px]">
+    <img src="../static/images/logo_image.svg" width="160" height="160" class = "absolute right-[250px] top-[150px]">
+    <img src="../static/images/logo_image.svg" width="160" height="160" class = "absolute left-[200px] bottom-[150px]">
+    <img src="../static/images/logo_image.svg" width="160" height="160" class = "absolute right-[150px] bottom-[100px]">
+
+
+    <img src="../static/images/logo_image.svg" width="160" height="160" class = "pt-[100px]">
+    <img src="../static/images/logo_text.svg" width="400" height="50" class = "pt-[25px]">
+    <h2  class = "pt-[40px]">Tiny pixels. Big vibes.</h2>
+    <div class = "text-2xl">Discover chaotic, low-res content made for Gen Z.</div>
+    <a href="{{ url_for('login') }}" class="nav-link-custom pt-[40px] h4">Log in</a>
+    <div class = "pt-[5px]">
+      <a href="{{ url_for('signup') }}" class="btn-custom h4">Register</a>
+    </div>
+    
   </section>
 </body>
 </html>
