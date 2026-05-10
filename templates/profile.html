@@ -47,11 +47,14 @@
         <div class="section">
             <h3>Owned Pictures</h3>
             {% if owned_pictures %}
-                <ul>
-                {% for pic_id in owned_pictures %}
-                    <li>Picture ID: {{ pic_id }}</li>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+                {% for pic in owned_pictures %}
+                    <div>
+                        <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" alt="Drawing {{ pic.id }}" style="width: 100%; border-radius: 4px;">
+                        <p style="font-size: 10px; color: #666;">ID: {{ pic.id }}</p>
+                    </div>
                 {% endfor %}
-                </ul>
+                </div>
             {% else %}
                 <p>No pictures owned yet.</p>
             {% endif %}

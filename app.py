@@ -157,8 +157,8 @@ def profile():
         flash('Profile updated successfully!')
         return redirect(url_for('profile'))
     
-    # Parse JSON strings for display
-    owned_pictures = json.loads(current_user.owned_pictures_ids)
+    # Get Picture objects instead of just IDs
+    owned_pictures = Picture.query.filter_by(user_id=current_user.id).order_by(Picture.created_at.desc()).all()
     likes = json.loads(current_user.likes)
     
     return render_template('profile.html', user=current_user, owned_pictures=owned_pictures, likes=likes)
