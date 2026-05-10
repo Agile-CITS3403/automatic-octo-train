@@ -1,5 +1,7 @@
 import os
 import json
+import base64
+import uuid
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -65,9 +67,6 @@ def upload_picture():
     # Remove metadata prefix if present (e.g., "data:image/png;base64,")
     if ',' in image_data:
         image_data = image_data.split(',')[1]
-    
-    import base64
-    import uuid
     
     try:
         filename = f"{uuid.uuid4()}.png"
