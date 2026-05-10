@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - {{ user.username }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <style>
         .profile-container { max-width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
         .form-group { margin-bottom: 15px; }
@@ -17,9 +17,16 @@
     </style>
 </head>
 <body>
-    <div class="profile-container">
+    <nav class="navbar-custom d-flex justify-content-between align-items-center px-4 py-3">
+        <h1 class="logo m-0">LowResGram</h1>
+        <div>
+            <a href="{{ url_for('login') }}" class="nav-link-custom me-3">Log in</a>
+            <a href="{{ url_for('signup') }}" class="btn-custom">Create account</a>
+        </div>
+    </nav>
+
         <div class="nav">
-            <a href="{{ url_for('draw') }}">Back to Draw</a> | 
+            <a href="{{ url_for('draw') }}">Create</a> | 
             <a href="{{ url_for('logout') }}">Logout</a>
         </div>
         
@@ -69,6 +76,5 @@
                 <p>No likes yet.</p>
             {% endif %}
         </div>
-    </div>
 </body>
 </html>
