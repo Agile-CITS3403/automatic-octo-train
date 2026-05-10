@@ -34,6 +34,13 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+# Picture Model
+class Picture(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -46,6 +53,53 @@ def home():
 @login_required
 def draw():
     return render_template('index.html')
+
+@app.route('/api/upload', methods=['POST'])
+@login_required
+def upload_picture():
+    data = request.get_json()
+    if not data or 'image' not in data:
+        return json.dumps({'error': 'No image data'}), 400
+    
+    image_data = data['image']
+    # Remove metadata prefix if present (e.g., "data:image/png;base64,")
+    if ',' in image_data:
+        image_data = image_data.split(',')[1]
+    
+    import base64
+    import uuid
+    
+    try:
+        filename = f"{uuid.uuid4()}.png"
+        filepath = os.path.join('static', 'uploads', filename)
+        
+        with open(filepath, 'wb') as f:
+            f.write(base64.b64decode(image_data))
+        
+        new_picture = Picture(filename=filename, user_id=current_user.id)
+        db.session.add(new_picture)
+        
+        # Also update owned_pictures_ids for the user
+        owned_ids = json.loads(current_user.owned_pictures_ids)
+        # We'll store the filename or ID. Let's store the ID as the field name suggests.
+        db.session.flush() # To get the new_picture.id
+        owned_ids.append(new_picture.id)
+        current_user.owned_pictures_ids = json.dumps(owned_ids)
+        
+        db.session.commit()
+        return json.dumps({'success': True, 'filename': filename}), 201
+    except Exception as e:
+        db.session.rollback()
+        return json.dumps({'error': str(e)}), 500
+
+@app.route('/api/pictures', methods=['GET'])
+def get_pictures():
+    pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+    return json.dumps([{
+        'id': p.id,
+        'url': url_for('static', filename='uploads/' + p.filename),
+        'user_id': p.user_id
+    } for p in pictures])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
