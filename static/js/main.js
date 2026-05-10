@@ -153,38 +153,59 @@ btnClear.addEventListener('click', () => {
 });
 
 // Save logic
-btnSave.addEventListener('click', () => {
+btnSave.addEventListener('click', async () => {
   const dataURL = canvas.toDataURL();
-  const drawings = JSON.parse(localStorage.getItem('drawings') || '[]');
-  drawings.unshift(dataURL);
-  localStorage.setItem('drawings', JSON.stringify(drawings));
   
-  // Visual feedback
-  const originalText = btnSave.innerText;
-  btnSave.innerText = 'Saved!';
-  btnSave.classList.replace('bg-emerald-600', 'bg-blue-600');
-  setTimeout(() => {
-    btnSave.innerText = originalText;
-    btnSave.classList.replace('bg-blue-600', 'bg-emerald-600');
-  }, 1500);
+  try {
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ image: dataURL })
+    });
+    
+    if (!response.ok) throw new Error('Failed to upload');
+    
+    // Visual feedback
+    const originalText = btnSave.innerText;
+    btnSave.innerText = 'Saved!';
+    btnSave.classList.replace('bg-emerald-600', 'bg-blue-600');
+    setTimeout(() => {
+      btnSave.innerText = originalText;
+      btnSave.classList.replace('bg-blue-600', 'bg-emerald-600');
+    }, 1500);
+  } catch (error) {
+    console.error('Error saving drawing:', error);
+    alert('Failed to save drawing to server.');
+  }
 });
 
 // Feed logic
-function renderFeed() {
-  const drawings = JSON.parse(localStorage.getItem('drawings') || '[]');
-  feedContainer.innerHTML = '';
+async function renderFeed() {
+  feedContainer.innerHTML = '<div class="col-span-full py-12 text-slate-400 font-medium">Loading...</div>';
+  
+  try {
+    const response = await fetch('/api/pictures');
+    const pictures = await response.json();
+    
+    feedContainer.innerHTML = '';
 
-  if (drawings.length === 0) {
-    feedContainer.innerHTML = '<div class="col-span-full py-12 text-slate-400 font-medium">No drawings yet. Start creating!</div>';
-    return;
+    if (pictures.length === 0) {
+      feedContainer.innerHTML = '<div class="col-span-full py-12 text-slate-400 font-medium">No drawings yet. Start creating!</div>';
+      return;
+    }
+
+    pictures.forEach(pic => {
+      const img = document.createElement('img');
+      img.src = pic.url;
+      img.className = 'rounded-lg';
+      feedContainer.appendChild(img);
+    });
+  } catch (error) {
+    console.error('Error loading feed:', error);
+    feedContainer.innerHTML = '<div class="col-span-full py-12 text-rose-400 font-medium">Error loading feed.</div>';
   }
-
-  drawings.forEach(dataURL => {
-    const img = document.createElement('img');
-    img.src = dataURL;
-    img.className = 'rounded-lg';
-    feedContainer.appendChild(img);
-  });
 }
 
 // Initial state
