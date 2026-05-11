@@ -65,8 +65,7 @@
                                 <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" alt="Drawing {{ pic.id }}" class="w-full h-full object-cover pixelated" style="image-rendering: pixelated;">
                             </div>
                             <div class="p-3 flex flex-col justify-between bg-[#151c45] flex-1">
-                                <p class="text-sm font-semibold text-slate-200 overflow-wrap-anywhere break-words mb-2">{{ pic.description if pic.description else 'Untitled Art' }}</p>
-                                <p class="text-xs text-slate-400 font-mono">ID: {{ pic.id }}</p>
+                                <p class="text-sm font-semibold text-slate-200 overflow-wrap-anywhere break-words">{{ pic.description if pic.description else 'Untitled Art' }}</p>
                             </div>
                         </div>
                     {% endfor %}
