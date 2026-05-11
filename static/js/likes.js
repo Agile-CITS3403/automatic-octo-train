@@ -27,6 +27,11 @@ async function toggleLike(btn, pictureId) {
             btn.classList.add('text-white');
             svg.setAttribute('fill', 'none');
         }
+
+        // Reload if on profile page to update lists
+        if (window.location.pathname === '/profile') {
+            window.location.reload();
+        }
     } catch (error) {
         console.error('Error toggling like:', error);
     }
