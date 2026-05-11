@@ -159,17 +159,33 @@ def profile():
         return redirect(url_for('profile'))
     
     owned_pictures = Picture.query.filter_by(user_id=current_user.id).order_by(Picture.created_at.desc()).all()
-    user_likes = json.loads(current_user.likes)
+    user_likes_ids = json.loads(current_user.likes)
     
-    # Prepare pictures with like status
+    # Prepare owned pictures with like status
     owned_pics_with_status = []
     for p in owned_pictures:
         owned_pics_with_status.append({
             'pic': p,
-            'is_liked': p.id in user_likes
+            'is_liked': p.id in user_likes_ids
         })
     
-    return render_template('profile.html', user=current_user, owned_pictures=owned_pics_with_status, likes=user_likes)
+    # Fetch liked pictures objects
+    liked_pictures_objs = Picture.query.filter(Picture.id.in_(user_likes_ids)).all() if user_likes_ids else []
+    
+    # Map them with username and like status (always true here)
+    liked_pics_with_status = []
+    for p in liked_pictures_objs:
+        u = User.query.get(p.user_id)
+        liked_pics_with_status.append({
+            'pic': p,
+            'username': u.username if u else 'Unknown',
+            'is_liked': True
+        })
+    
+    return render_template('profile.html', 
+                         user=current_user, 
+                         owned_pictures=owned_pics_with_status, 
+                         liked_pictures=liked_pics_with_status)
 
 @app.route('/feed')
 @login_required
