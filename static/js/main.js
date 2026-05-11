@@ -170,10 +170,11 @@ btnSave.addEventListener('click', async () => {
     // Visual feedback
     const originalText = btnSave.innerText;
     btnSave.innerText = 'Saved!';
-    btnSave.classList.replace('bg-emerald-600', 'bg-blue-600');
+    const originalBg = btnSave.style.backgroundColor;
+    btnSave.style.backgroundColor = '#166534'; // A green success color
     setTimeout(() => {
       btnSave.innerText = originalText;
-      btnSave.classList.replace('bg-blue-600', 'bg-emerald-600');
+      btnSave.style.backgroundColor = originalBg;
     }, 1500);
   } catch (error) {
     console.error('Error saving drawing:', error);
