@@ -112,7 +112,7 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
-            return redirect(url_for('draw'))
+            return redirect(url_for('feed'))
         else:
             flash('Invalid username or password')
             
@@ -137,7 +137,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
-            return redirect(url_for('draw'))
+            return redirect(url_for('feed'))
             
     return render_template('signup.html')
 
