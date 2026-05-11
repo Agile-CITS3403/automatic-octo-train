@@ -1,0 +1,32 @@
+<nav class="grid grid-cols-3 gap-4 w-full pt-4 items-center">
+    <!-- Left Section -->
+    <div class="flex justify-start items-center gap-4 px-[30px]">
+        {% if active_page == 'draw' %}
+            <a href="{{ url_for('feed') }}" class="btn-custom">Back to Feed</a>
+        {% elif active_page == 'profile' %}
+            <a href="{{ url_for('draw') }}" class="btn-custom">Create</a>
+            <a href="{{ url_for('feed') }}" class="btn-custom">View Feed</a>
+        {% elif active_page == 'feed' %}
+            <a href="{{ url_for('draw') }}" class="btn-custom">Create</a>
+        {% endif %}
+    </div>
+    
+    <!-- Center Section (Logo) -->
+    <div class="flex justify-center items-center">
+        <a href="{{ url_for('feed') }}">
+            <img src="{{ url_for('static', filename='images/logo_text.svg') }}" width="250" height="40" class="opacity-90 hover:opacity-100 transition-opacity">
+        </a>
+    </div>
+
+    <!-- Right Section -->
+    <div class="flex justify-end items-center gap-4 px-[30px]">
+        {% if active_page == 'draw' %}
+            <a href="{{ url_for('profile') }}" class="btn-custom">Profile</a>
+        {% elif active_page == 'profile' %}
+            <a href="{{ url_for('profile') }}" class="btn-custom">Edit Profile</a>
+            <a href="{{ url_for('logout') }}" class="btn-custom">Logout</a>
+        {% elif active_page == 'feed' %}
+            <a href="{{ url_for('profile') }}" class="btn-custom">Profile</a>
+        {% endif %}
+    </div>
+</nav>

@@ -4,32 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LowResGram | Create account</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-[#101019] text-white min-h-screen">
 
-  <div class="auth-page d-flex justify-content-center align-items-center">
-    <div class="form-box p-4">
-      <h2 class="mb-4 text-center">Create account</h2>
+  <div class="auth-page flex justify-center items-center min-h-screen">
+    <div class="form-box p-8 w-full max-w-sm">
+      <h2 class="mb-8 text-center text-3xl font-bold">Create account</h2>
 
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-danger">{{ message }}</div>
+            <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4">{{ message }}</div>
           {% endfor %}
         {% endif %}
       {% endwith %}
 
-      <form method="POST">
-        <input class="form-control custom-input mb-3" type="text" name="username" placeholder="Username" required>
-        <input class="form-control custom-input mb-3" type="email" name="email" placeholder="Email" required>
-        <input class="form-control custom-input mb-3" type="password" name="password" placeholder="Password" required>
-        <button class="btn-custom w-100 border-0" type="submit">Create account</button>
+      <form method="POST" class="flex flex-col gap-4">
+        <input class="w-full bg-[#1F2544] text-white px-4 py-3 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500" type="text" name="username" placeholder="Username" required>
+        <input class="w-full bg-[#1F2544] text-white px-4 py-3 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500" type="email" name="email" placeholder="Email" required>
+        <input class="w-full bg-[#1F2544] text-white px-4 py-3 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500" type="password" name="password" placeholder="Password" required>
+        <button class="btn-custom w-full border-0 mt-2 py-3" type="submit">Create account</button>
       </form>
 
-      <p class="mt-3 text-center">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
-      <p class="text-center"><a href="{{ url_for('home') }}">Back to home</a></p>
+      <p class="mt-6 text-center text-slate-400">Already have an account? <a href="{{ url_for('login') }}" class="text-blue-300 hover:text-white">Log in</a></p>
+      <p class="mt-2 text-center text-slate-400"><a href="{{ url_for('home') }}" class="hover:text-white">Back to home</a></p>
     </div>
   </div>
 
