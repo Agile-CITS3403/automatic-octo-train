@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from migrations import run_all_migrations
 
 load_dotenv()
 
@@ -223,6 +224,7 @@ def toggle_like(picture_id):
 
 with app.app_context():
     db.create_all()
+    run_all_migrations()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
