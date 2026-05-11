@@ -60,11 +60,12 @@
                 {% if owned_pictures %}
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {% for pic in owned_pictures %}
-                        <div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group cursor-pointer shadow-lg">
-                            <div class="aspect-square bg-white relative">
+                        <div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group shadow-lg flex flex-col">
+                            <div class="aspect-square bg-[#0d1333] relative">
                                 <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" alt="Drawing {{ pic.id }}" class="w-full h-full object-cover pixelated" style="image-rendering: pixelated;">
                             </div>
-                            <div class="p-3 flex justify-between items-center bg-[#151c45]">
+                            <div class="p-3 flex flex-col justify-between bg-[#151c45] flex-1">
+                                <p class="text-sm font-semibold text-slate-200 overflow-wrap-anywhere break-words mb-2">{{ pic.description if pic.description else 'Untitled Art' }}</p>
                                 <p class="text-xs text-slate-400 font-mono">ID: {{ pic.id }}</p>
                             </div>
                         </div>

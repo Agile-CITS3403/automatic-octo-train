@@ -40,6 +40,7 @@ class User(UserMixin, db.Model):
 class Picture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
@@ -64,6 +65,7 @@ def upload_picture():
         return json.dumps({'error': 'No image data'}), 400
     
     image_data = data['image']
+    description = data.get('description', '')
     # Remove metadata prefix if present (e.g., "data:image/png;base64,")
     if ',' in image_data:
         image_data = image_data.split(',')[1]
@@ -75,7 +77,7 @@ def upload_picture():
         with open(filepath, 'wb') as f:
             f.write(base64.b64decode(image_data))
         
-        new_picture = Picture(filename=filename, user_id=current_user.id)
+        new_picture = Picture(filename=filename, user_id=current_user.id, description=description)
         db.session.add(new_picture)
         
         # Also update owned_pictures_ids for the user
@@ -165,7 +167,13 @@ def profile():
 @app.route('/feed')
 @login_required
 def feed():
-    return render_template('feed.html')
+    pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+    # Let's map users as well
+    pics_with_users = []
+    for p in pictures:
+        u = User.query.get(p.user_id)
+        pics_with_users.append({'pic': p, 'username': u.username if u else 'Unknown'})
+    return render_template('feed.html', pictures=pics_with_users)
 
 with app.app_context():
     db.create_all()

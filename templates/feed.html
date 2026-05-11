@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LowResGram | Home</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
-
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#101019] text-white min-h-screen flex flex-col">
@@ -14,122 +13,25 @@
   {% set active_page = 'feed' %}
   {% include 'navbar.html' %}
 
-  <!-- This is the temporary feed area it has a masonery grip style to it -->
+  <!-- Feed Area -->
   <div class="columns-[250px] gap-4 p-4 space-y-[48px] hero">
-  <!-- Card -->
+    {% for post in pictures %}
+    <!-- Card -->
     <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
+        <div class="img-placeholder" style="background-image: url('{{ url_for('static', filename='uploads/' + post.pic.filename) }}'); background-size: cover; background-position: center; image-rendering: pixelated;"></div>
         <div class="card-text">
-          <h5>Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump </h5>
-          <p>@user1</p>
+          <h5 class="text-lg font-semibold overflow-wrap-anywhere break-words">{{ post.pic.description if post.pic.description else 'Untitled Art' }}</h5>
+          <p class="text-sm text-indigo-300 font-mono mt-1">@{{ post.username }}</p>
         </div>
     </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>late night vibes late night vibes </h5>
-          <p>@user2</p>
-        </div>
+    {% endfor %}
+    
+    {% if not pictures %}
+    <div class="text-center text-slate-400 py-10 w-full col-span-full">
+        <p>No pictures in the feed yet. Be the first to draw something!</p>
     </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>fit check</h5>
-          <p>@user3</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>blurry but iconic blurry but iconic blurry but iconic blurry but iconic blurry but iconic blurry but iconic </h5>
-          <p>@someone</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>moodboard energy moodboard energy </h5>
-            <p>@f4scozso</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump </h5>
-          <p>@user1</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>fit check</h5>
-          <p>@user3</p>
-        </div>
-    </div>
-
-        <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump </h5>
-          <p>@user1</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>late night vibes late night vibes </h5>
-          <p>@user2</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>fit check</h5>
-          <p>@user3</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>blurry but iconic blurry but iconic blurry but iconic blurry but iconic blurry but iconic blurry but iconic </h5>
-          <p>@someone</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>moodboard energy moodboard energy </h5>
-            <p>@f4scozso</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump </h5>
-          <p>@user1</p>
-        </div>
-    </div>
-
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder"></div>
-        <div class="card-text">
-          <h5>fit check</h5>
-          <p>@user3</p>
-        </div>
-    </div>
+    {% endif %}
   </div>
-
 
 </body>
 </html>

@@ -132,6 +132,8 @@ btnClear.addEventListener('click', () => {
 // Save logic
 btnSave.addEventListener('click', async () => {
   const dataURL = canvas.toDataURL();
+  const descInput = document.getElementById('pic-description');
+  const description = descInput ? descInput.value : '';
   
   try {
     const response = await fetch('/api/upload', {
@@ -139,11 +141,14 @@ btnSave.addEventListener('click', async () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ image: dataURL })
+      body: JSON.stringify({ image: dataURL, description: description })
     });
     
     if (!response.ok) throw new Error('Failed to upload');
     
+    // Clear description on save
+    if (descInput) descInput.value = '';
+
     // Visual feedback
     const originalText = btnSave.innerText;
     btnSave.innerText = 'Saved!';
