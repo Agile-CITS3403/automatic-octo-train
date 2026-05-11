@@ -1,81 +1,64 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pixel32 Draw</title>
-  </head>
-  <body class="bg-slate-50">
-    <div id="app" class="flex justify-center w-full">
-      <!-- Main Screen -->
-      <div id="screen-main" class="screen">
-        <h1 class="text-5xl font-black text-slate-800 tracking-tighter my-8">Pixel32</h1>
-        <div class="flex flex-col gap-3 w-full max-w-xs">
-          <button id="btn-go-draw" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-indigo-200">
-            Start Drawing
-          </button>
-          <button id="btn-go-feed" class="bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 font-bold py-4 px-6 rounded-xl transition-all">
-            View Feed
-          </button>
-          <a href="{{ url_for('profile') }}" class="bg-slate-800 hover:bg-slate-900 text-white text-center font-bold py-4 px-6 rounded-xl transition-all shadow-lg">
-            My Profile
-          </a>
-          <a href="{{ url_for('home') }}" class="text-center text-slate-500 hover:text-slate-700 font-medium py-2">
-            Back to Home
-          </a>
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LowResGram | Draw</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#101019] text-white min-h-screen flex flex-col">
 
-      <!-- Draw Screen -->
-      <div id="screen-draw" class="screen hidden">
-        <header class="flex items-center w-full gap-4 mb-2">
-          <button class="btn-back bg-slate-100 hover:bg-slate-200 text-slate-600 p-3 rounded-lg transition-colors group">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-          <h2 class="text-2xl font-bold text-slate-800">Drawing Studio</h2>
-        </header>
+  <!-- Standard App Navigation -->
+  {% set active_page = 'draw' %}
+  {% include 'navbar.html' %}
 
-        <!-- Canvas with Grid Overlay -->
-        <div class="canvas-wrapper">
+  <!-- Main Drawing Area -->
+  <main class="flex-1 flex justify-center items-center p-4 sm:p-8">
+    
+    <div class="bg-[#151c45] border border-slate-800 shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-5xl flex flex-col md:flex-row gap-10 md:gap-16 items-center md:items-stretch">
+      
+      <!-- Left side: Canvas -->
+      <div class="flex flex-col gap-4 shrink-0 items-center">
+        <h2 class="text-3xl font-bold tracking-tighter text-center md:text-left w-full text-blue-100">Studio</h2>
+        <div class="canvas-wrapper border-4 border-slate-700 rounded-xl overflow-hidden shadow-black/50 shadow-lg shrink-0 bg-white">
           <canvas id="paint-canvas" width="32" height="32"></canvas>
           <div class="grid-overlay"></div>
         </div>
-
-        <div class="w-full flex flex-col gap-6">
-          <!-- Color Palette -->
-          <div class="flex flex-col gap-3">
-            <label class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Palette</label>
-            <div id="color-palette" class="grid grid-cols-8 gap-2 w-full max-w-sm">
-              <!-- Colors will be injected via JS -->
-            </div>
-          </div>
-
-          <div class="flex gap-3">
-            <button id="btn-clear" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3 px-4 rounded-xl transition-colors border border-rose-100">
-              Clear
-            </button>
-            <button id="btn-save" class="flex-[2] bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-emerald-200">
-              Save to Feed
-            </button>
-          </div>
-        </div>
       </div>
 
-      <!-- Feed Screen -->
-      <div id="screen-feed" class="screen hidden">
-        <header class="flex items-center w-full gap-4 mb-6">
-          <button class="btn-back bg-slate-100 hover:bg-slate-200 text-slate-600 p-3 rounded-lg transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          </button>
-          <h2 class="text-2xl font-bold text-slate-800">Community Feed</h2>
-        </header>
-        <div id="feed-container" class="feed-grid grid grid-cols-3 sm:grid-cols-4 gap-4 w-full">
-          <!-- Images will be injected here -->
+      <!-- Right side: Tools -->
+      <div class="flex flex-col gap-8 flex-1 justify-center">
+        
+        <!-- Color Palette -->
+        <div class="flex flex-col gap-4 bg-black/20 p-6 rounded-2xl border border-white/5">
+          <label class="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
+            Color Palette
+          </label>
+          <div id="color-palette" class="grid grid-cols-8 gap-3 w-full">
+            <!-- Colors will be injected via JS -->
+          </div>
         </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4">
+          <button id="btn-clear" class="flex-1 bg-red-950/40 hover:bg-red-900/60 text-red-300 font-bold py-4 px-6 rounded-2xl transition-all border border-red-900/50 hover:border-red-500/50 shadow-lg flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            Clear
+          </button>
+          <button id="btn-save" class="flex-[2] btn-custom hover:bg-blue-600 font-bold py-4 px-6 text-lg rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2 border border-blue-400/20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save to Feed
+          </button>
+        </div>
+
       </div>
     </div>
-    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
-  </body>
+  </main>
+
+  <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
 </html>

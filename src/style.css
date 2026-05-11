@@ -27,10 +27,24 @@ body {
   height: 320px;
 }
 
+@media (min-width: 768px) {
+  #paint-canvas {
+    width: 480px;
+    height: 480px;
+  }
+}
+
 .canvas-wrapper {
   @apply relative border-4 border-slate-200 rounded-sm overflow-hidden box-content;
   width: 320px;
   height: 320px;
+}
+
+@media (min-width: 768px) {
+  .canvas-wrapper {
+    width: 480px;
+    height: 480px;
+  }
 }
 
 .grid-overlay {
@@ -39,6 +53,12 @@ body {
     linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
   background-size: 10px 10px; /* 320px / 32 = 10px */
+}
+
+@media (min-width: 768px) {
+  .grid-overlay {
+    background-size: 15px 15px; /* 480px / 32 = 15px */
+  }
 }
 
 .color-btn {

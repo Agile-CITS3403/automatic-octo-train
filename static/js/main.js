@@ -1,18 +1,9 @@
 // Elements
-const screenMain = document.getElementById('screen-main');
-const screenDraw = document.getElementById('screen-draw');
-const screenFeed = document.getElementById('screen-feed');
-
-const btnGoDraw = document.getElementById('btn-go-draw');
-const btnGoFeed = document.getElementById('btn-go-feed');
-const btnBacks = document.querySelectorAll('.btn-back');
-
 const canvas = document.getElementById('paint-canvas');
 const ctx = canvas.getContext('2d');
 const colorPalette = document.getElementById('color-palette');
 const btnClear = document.getElementById('btn-clear');
 const btnSave = document.getElementById('btn-save');
-const feedContainer = document.getElementById('feed-container');
 
 // State
 let isDrawing = false;
@@ -57,20 +48,6 @@ function setupPalette() {
     colorPalette.appendChild(btn);
   });
 }
-
-// Screen management
-function showScreen(screenId) {
-  [screenMain, screenDraw, screenFeed].forEach(s => s.classList.add('hidden'));
-  document.getElementById(screenId).classList.remove('hidden');
-
-  if (screenId === 'screen-feed') {
-    renderFeed();
-  }
-}
-
-btnGoDraw.addEventListener('click', () => showScreen('screen-draw'));
-btnGoFeed.addEventListener('click', () => showScreen('screen-feed'));
-btnBacks.forEach(btn => btn.addEventListener('click', () => showScreen('screen-main')));
 
 // Drawing logic
 function getCoordinates(e) {
@@ -170,43 +147,17 @@ btnSave.addEventListener('click', async () => {
     // Visual feedback
     const originalText = btnSave.innerText;
     btnSave.innerText = 'Saved!';
-    btnSave.classList.replace('bg-emerald-600', 'bg-blue-600');
+    const originalBg = btnSave.style.backgroundColor;
+    btnSave.style.backgroundColor = '#166534'; // A green success color
     setTimeout(() => {
       btnSave.innerText = originalText;
-      btnSave.classList.replace('bg-blue-600', 'bg-emerald-600');
+      btnSave.style.backgroundColor = originalBg;
     }, 1500);
   } catch (error) {
     console.error('Error saving drawing:', error);
     alert('Failed to save drawing to server.');
   }
 });
-
-// Feed logic
-async function renderFeed() {
-  feedContainer.innerHTML = '<div class="col-span-full py-12 text-slate-400 font-medium">Loading...</div>';
-  
-  try {
-    const response = await fetch('/api/pictures');
-    const pictures = await response.json();
-    
-    feedContainer.innerHTML = '';
-
-    if (pictures.length === 0) {
-      feedContainer.innerHTML = '<div class="col-span-full py-12 text-slate-400 font-medium">No drawings yet. Start creating!</div>';
-      return;
-    }
-
-    pictures.forEach(pic => {
-      const img = document.createElement('img');
-      img.src = pic.url;
-      img.className = 'rounded-lg';
-      feedContainer.appendChild(img);
-    });
-  } catch (error) {
-    console.error('Error loading feed:', error);
-    feedContainer.innerHTML = '<div class="col-span-full py-12 text-rose-400 font-medium">Error loading feed.</div>';
-  }
-}
 
 // Initial state
 function init() {
