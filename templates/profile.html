@@ -29,46 +29,77 @@
         </div>
     </nav>
 
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-4xl mx-auto">
+        <div class = "px-5">
+            <div class = "py-5 grid grid-cols-2">
+                <div class = "flex justify-start">
+                    <h1>{{ user.username }}</h1>
+                </div>
 
-        <div class = "py-5 grid grid-cols-2">
-            <div class = "flex justify-start">
-                <h1>{{ user.username }}</h1>
+                <div class="flex justify-end">
+                    <div class="flex flex-col text-right">
+                        <p>interests:</p>
+                        <h2>interest 1</h2>
+                        <h2>interest 2</h2>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex justify-end">
-                <div class="flex flex-col text-right">
-                    <p>interests:</p>
-                    <h2>interest 1</h2>
-                    <h2>interest 2</h2>
+            <p class = "py-5">profile Description inject here</p>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+
+            <div class="section py-5">
+                <h3>Likes</h3>
+                {% if likes %}
+                    <ul>
+                    {% for like_id in likes %}
+                        <li>Liked Item ID: {{ like_id }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No likes yet.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+
+
+        <div class="columns-[250px] space-y-[48px]">
+        <!-- Card -->
+            <div class="post-card break-inside-avoid mb-4">
+                <div class="img-placeholder"></div>
+                <div class="card-text">
+                <h5>Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump Campus dump </h5>
+                <p>@user1</p>
+                </div>
+            </div>
+
+            <div class="post-card break-inside-avoid mb-4">
+                <div class="img-placeholder"></div>
+                <div class="card-text">
+                <h5>late night vibes late night vibes </h5>
+                <p>@user2</p>
+                </div>
+            </div>
+
+            <div class="post-card break-inside-avoid mb-4">
+                <div class="img-placeholder"></div>
+                <div class="card-text">
+                <h5>fit check</h5>
+                <p>@user3</p>
                 </div>
             </div>
         </div>
 
-        <p class = "py-5">profile Description inject here</p>
-
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <ul class="flashes">
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        {% endwith %}
-
-        <div class="section py-5">
-            <h3>Likes</h3>
-            {% if likes %}
-                <ul>
-                {% for like_id in likes %}
-                    <li>Liked Item ID: {{ like_id }}</li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p>No likes yet.</p>
-            {% endif %}
-        </div>
 
         <div class="section">
             <h3>Owned Pictures</h3>
