@@ -162,6 +162,11 @@ def profile():
     
     return render_template('profile.html', user=current_user, owned_pictures=owned_pictures, likes=likes)
 
+@app.route('/feed')
+@login_required
+def feed():
+    return render_template('feed.html')
+
 with app.app_context():
     db.create_all()
 
