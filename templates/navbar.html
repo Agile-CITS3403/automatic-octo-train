@@ -20,14 +20,19 @@
     </div>
 
     <!-- Right Section -->
-    <div class="flex justify-center md:justify-end items-center gap-2 md:gap-4 md:px-[30px] flex-wrap order-3 md:order-none">
-        {% if active_page == 'draw' %}
-            <a href="{{ url_for('profile') }}" class="btn-custom text-lg md:text-xl px-6 py-3 md:px-8 md:py-3.5 font-semibold">Profile</a>
-        {% elif active_page == 'profile' %}
-            <a href="{{ url_for('profile') }}" class="btn-custom text-lg md:text-xl px-6 py-3 md:px-8 md:py-3.5 font-semibold">Edit Profile</a>
-            <a href="{{ url_for('logout') }}" class="btn-custom bg-red-900/40 hover:bg-red-900/80 text-red-100 text-lg md:text-xl px-6 py-3 md:px-8 md:py-3.5 font-semibold">Logout</a>
-        {% elif active_page == 'feed' %}
-            <a href="{{ url_for('profile') }}" class="btn-custom text-lg md:text-xl px-6 py-3 md:px-8 md:py-3.5 font-semibold">Profile</a>
+    <div class="flex justify-center md:justify-end items-center gap-2 md:gap-4 md:px-[30px] flex-nowrap order-3 md:order-none overflow-hidden">
+        
+        {% if active_page == 'profile' %}
+            <a href="{{ url_for('profile') }}" class="btn-custom text-lg md:text-xl px-4 py-3 md:px-6 md:py-3.5 font-semibold whitespace-nowrap">Edit Profile</a>
+            <a href="{{ url_for('logout') }}" class="btn-custom bg-red-900/40 hover:bg-red-900/80 text-red-100 text-lg md:text-xl px-4 py-3 md:px-6 md:py-3.5 font-semibold whitespace-nowrap">Logout</a>
+        {% elif current_user.is_authenticated %}
+            <a href="{{ url_for('profile') }}" class="btn-custom flex items-center gap-3 text-lg md:text-xl pl-4 pr-7 py-2 md:pl-5 md:pr-7 md:py-2.5 font-semibold whitespace-nowrap">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-indigo-900 rounded-full border-2 border-[#1F2544] flex items-center justify-center text-base md:text-lg font-bold text-indigo-300">
+                    {{ current_user.username[0] | upper }}
+                </div>
+                <span>Profile</span>
+            </a>
         {% endif %}
+
     </div>
 </nav>
