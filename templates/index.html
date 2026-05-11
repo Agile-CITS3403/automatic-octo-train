@@ -16,23 +16,8 @@
 <body class="bg-[#101019] text-white min-h-screen flex flex-col">
 
   <!-- Standard App Navigation -->
-  <nav class="grid grid-cols-3 gap-4 w-full">
-      <div class="flex justify-start">
-          <div class="p-[30px]">
-              <a href="{{ url_for('feed') }}" class="btn-custom border border-slate-700 hover:border-slate-500 transition-all">Back to Feed</a>
-          </div>
-      </div>
-      
-      <div class="flex justify-center">
-          <img src="{{ url_for('static', filename='images/logo_text.svg') }}" width="300" height="50">
-      </div>
-
-      <div class="flex justify-end">
-          <div class="p-[30px]">
-              <a href="{{ url_for('profile') }}" class="btn-custom border border-slate-700 hover:border-slate-500 transition-all">Profile</a>
-          </div>
-      </div>
-  </nav>
+  {% set active_page = 'draw' %}
+  {% include 'navbar.html' %}
 
   <!-- Main Drawing Area -->
   <main class="flex-1 flex justify-center items-center p-4 sm:p-8">
