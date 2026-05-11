@@ -32,4 +32,5 @@ __pycache__/
 .env
 .flaskenv
 
-*.dbstatic/uploads/
+*.db
+static/uploads/
