@@ -14,15 +14,13 @@
   {% include 'navbar.html' %}
 
   <!-- Feed Area -->
-  <div class="columns-[250px] gap-4 p-4 space-y-[48px] hero">
+  <div class="columns-[250px] gap-4 px-6 md:px-16 py-4 space-y-[48px] hero">
     {% for post in pictures %}
     <!-- Card -->
-    <div class="post-card break-inside-avoid mb-4">
-        <div class="img-placeholder" style="background-image: url('{{ url_for('static', filename='uploads/' + post.pic.filename) }}'); background-size: cover; background-position: center; image-rendering: pixelated;"></div>
-        <div class="card-text">
-          <h5 class="text-lg font-semibold overflow-wrap-anywhere break-words">{{ post.pic.description if post.pic.description else 'Untitled Art' }}</h5>
-          <p class="text-sm text-indigo-300 font-mono mt-1">@{{ post.username }}</p>
-        </div>
+    <div class="break-inside-avoid mb-4">
+        {% with pic=post.pic, username=post.username, is_liked=post.is_liked %}
+            {% include 'components/picture_card.html' %}
+        {% endwith %}
     </div>
     {% endfor %}
     
@@ -33,5 +31,6 @@
     {% endif %}
   </div>
 
+  <script src="{{ url_for('static', filename='js/likes.js') }}"></script>
 </body>
 </html>

@@ -59,15 +59,10 @@
                 
                 {% if owned_pictures %}
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {% for pic in owned_pictures %}
-                        <div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group shadow-lg flex flex-col">
-                            <div class="aspect-square bg-[#0d1333] relative">
-                                <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" alt="Drawing {{ pic.id }}" class="w-full h-full object-cover pixelated" style="image-rendering: pixelated;">
-                            </div>
-                            <div class="p-3 flex flex-col justify-between bg-[#151c45] flex-1">
-                                <p class="text-sm font-semibold text-slate-200 overflow-wrap-anywhere break-words">{{ pic.description if pic.description else 'Untitled Art' }}</p>
-                            </div>
-                        </div>
+                    {% for item in owned_pictures %}
+                        {% with pic=item.pic, is_liked=item.is_liked %}
+                            {% include 'components/picture_card.html' %}
+                        {% endwith %}
                     {% endfor %}
                     </div>
                 {% else %}
@@ -102,5 +97,7 @@
 
         </div>
     </main>
+
+    <script src="{{ url_for('static', filename='js/likes.js') }}"></script>
 </body>
 </html>

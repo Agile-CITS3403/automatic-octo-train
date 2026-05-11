@@ -158,22 +158,52 @@ def profile():
         flash('Profile updated successfully!')
         return redirect(url_for('profile'))
     
-    # Get Picture objects instead of just IDs
     owned_pictures = Picture.query.filter_by(user_id=current_user.id).order_by(Picture.created_at.desc()).all()
-    likes = json.loads(current_user.likes)
+    user_likes = json.loads(current_user.likes)
     
-    return render_template('profile.html', user=current_user, owned_pictures=owned_pictures, likes=likes)
+    # Prepare pictures with like status
+    owned_pics_with_status = []
+    for p in owned_pictures:
+        owned_pics_with_status.append({
+            'pic': p,
+            'is_liked': p.id in user_likes
+        })
+    
+    return render_template('profile.html', user=current_user, owned_pictures=owned_pics_with_status, likes=user_likes)
 
 @app.route('/feed')
 @login_required
 def feed():
     pictures = Picture.query.order_by(Picture.created_at.desc()).all()
-    # Let's map users as well
+    user_likes = json.loads(current_user.likes)
+    
     pics_with_users = []
     for p in pictures:
         u = User.query.get(p.user_id)
-        pics_with_users.append({'pic': p, 'username': u.username if u else 'Unknown'})
+        pics_with_users.append({
+            'pic': p, 
+            'username': u.username if u else 'Unknown',
+            'is_liked': p.id in user_likes
+        })
     return render_template('feed.html', pictures=pics_with_users)
+
+@app.route('/api/like/<int:picture_id>', methods=['POST'])
+@login_required
+def toggle_like(picture_id):
+    picture = Picture.query.get_or_404(picture_id)
+    likes = json.loads(current_user.likes)
+    
+    if picture_id in likes:
+        likes.remove(picture_id)
+        is_liked = False
+    else:
+        likes.append(picture_id)
+        is_liked = True
+        
+    current_user.likes = json.dumps(likes)
+    db.session.commit()
+    
+    return json.dumps({'success': True, 'is_liked': is_liked}), 200
 
 with app.app_context():
     db.create_all()
