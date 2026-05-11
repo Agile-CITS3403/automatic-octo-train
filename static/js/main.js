@@ -149,15 +149,16 @@ btnSave.addEventListener('click', async () => {
     // Clear description on save
     if (descInput) descInput.value = '';
 
-    // Visual feedback
-    const originalText = btnSave.innerText;
-    btnSave.innerText = 'Saved!';
-    const originalBg = btnSave.style.backgroundColor;
+    // Visual feedback and redirect
+    const originalText = btnSave.innerHTML;
+    btnSave.innerText = 'Saved! Redirecting...';
     btnSave.style.backgroundColor = '#166534'; // A green success color
+    
+    // Redirect to profile page after a brief delay
     setTimeout(() => {
-      btnSave.innerText = originalText;
-      btnSave.style.backgroundColor = originalBg;
-    }, 1500);
+      window.location.href = '/profile';
+    }, 800);
+
   } catch (error) {
     console.error('Error saving drawing:', error);
     alert('Failed to save drawing to server.');
