@@ -12,114 +12,72 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .screen {
-      background-color: #151c45;
-      color: white;
-      border: none;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    #paint-canvas {
-      background-color: white;
-    }
-    .color-btn {
-      border-color: rgba(255,255,255,0.1);
-    }
-    .color-btn.active {
-      border-color: white;
-      transform: scale(1.1);
-    }
-    .btn-custom-outline {
-      border: 2px solid #1F2544;
-      color: white;
-      padding: 10px 18px;
-      border-radius: 25px;
-      display: inline-block;
-      transition: all 0.3s;
-    }
-    .btn-custom-outline:hover {
-      background-color: #1F2544;
-      color: white;
-    }
-  </style>
 </head>
-<body>
-  <div id="app" class="flex justify-center w-full min-h-screen items-center">
+<body class="bg-[#101019] text-white min-h-screen flex flex-col">
+
+  <!-- Standard App Navigation -->
+  <nav class="grid grid-cols-3 gap-4 w-full">
+      <div class="flex justify-start">
+          <div class="p-[30px]">
+              <a href="{{ url_for('feed') }}" class="btn-custom border border-slate-700 hover:border-slate-500 transition-all">Back to Feed</a>
+          </div>
+      </div>
+      
+      <div class="flex justify-center">
+          <img src="{{ url_for('static', filename='images/logo_text.svg') }}" width="300" height="50">
+      </div>
+
+      <div class="flex justify-end">
+          <div class="p-[30px]">
+              <a href="{{ url_for('profile') }}" class="btn-custom border border-slate-700 hover:border-slate-500 transition-all">Profile</a>
+          </div>
+      </div>
+  </nav>
+
+  <!-- Main Drawing Area -->
+  <main class="flex-1 flex justify-center items-center p-4 sm:p-8">
     
-    <!-- Background logos like in front_page -->
-    <img src="{{ url_for('static', filename='images/logo_image.svg') }}" width="120" height="120" class="absolute left-[10%] top-[10%] opacity-20 pointer-events-none">
-    <img src="{{ url_for('static', filename='images/logo_image.svg') }}" width="120" height="120" class="absolute right-[10%] top-[15%] opacity-20 pointer-events-none">
-    <img src="{{ url_for('static', filename='images/logo_image.svg') }}" width="120" height="120" class="absolute left-[15%] bottom-[10%] opacity-20 pointer-events-none">
-    <img src="{{ url_for('static', filename='images/logo_image.svg') }}" width="120" height="120" class="absolute right-[15%] bottom-[15%] opacity-20 pointer-events-none">
-
-    <!-- Main Screen -->
-    <div id="screen-main" class="screen flex flex-col items-center gap-6 p-10 rounded-3xl max-w-md w-full">
-      <img src="{{ url_for('static', filename='images/logo_image.svg') }}" width="80" height="80">
-      <h1 class="text-5xl font-bold tracking-tighter">Pixel32</h1>
-      <div class="flex flex-col gap-4 w-full">
-        <button id="btn-go-draw" class="btn-custom text-xl font-bold py-4 text-center">
-          Start Drawing
-        </button>
-        <button id="btn-go-feed" class="btn-custom-outline text-xl font-bold py-4 text-center">
-          View Feed
-        </button>
-        <a href="{{ url_for('profile') }}" class="btn-custom-outline text-xl font-bold py-4 text-center">
-          My Profile
-        </a>
-        <a href="{{ url_for('home') }}" class="text-center text-slate-400 hover:text-white font-medium py-2">
-          Back to Home
-        </a>
-      </div>
-    </div>
-
-    <!-- Draw Screen -->
-    <div id="screen-draw" class="screen hidden flex flex-col items-center gap-6 p-10 rounded-3xl max-w-md w-full">
-      <header class="flex items-center w-full gap-4">
-        <button class="btn-back bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <h2 class="text-3xl font-bold">Studio</h2>
-      </header>
-
-      <!-- Canvas with Grid Overlay -->
-      <div class="canvas-wrapper border-4 border-slate-700 rounded-lg">
-        <canvas id="paint-canvas" width="32" height="32"></canvas>
-        <div class="grid-overlay"></div>
+    <div class="bg-[#151c45] border border-slate-800 shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-5xl flex flex-col md:flex-row gap-10 md:gap-16 items-center md:items-stretch">
+      
+      <!-- Left side: Canvas -->
+      <div class="flex flex-col gap-4 shrink-0 items-center">
+        <h2 class="text-3xl font-bold tracking-tighter text-center md:text-left w-full text-blue-100">Studio</h2>
+        <div class="canvas-wrapper border-4 border-slate-700 rounded-xl overflow-hidden shadow-black/50 shadow-lg shrink-0 bg-white">
+          <canvas id="paint-canvas" width="32" height="32"></canvas>
+          <div class="grid-overlay"></div>
+        </div>
       </div>
 
-      <div class="w-full flex flex-col gap-6">
+      <!-- Right side: Tools -->
+      <div class="flex flex-col gap-8 flex-1 justify-center">
+        
         <!-- Color Palette -->
-        <div class="flex flex-col gap-3">
-          <label class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Palette</label>
-          <div id="color-palette" class="grid grid-cols-8 gap-2 w-full">
+        <div class="flex flex-col gap-4 bg-black/20 p-6 rounded-2xl border border-white/5">
+          <label class="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
+            Color Palette
+          </label>
+          <div id="color-palette" class="grid grid-cols-8 gap-3 w-full">
             <!-- Colors will be injected via JS -->
           </div>
         </div>
 
-        <div class="flex gap-3">
-          <button id="btn-clear" class="flex-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 font-bold py-3 px-4 rounded-xl transition-colors border border-red-900/50">
+        <!-- Action Buttons -->
+        <div class="flex gap-4">
+          <button id="btn-clear" class="flex-1 bg-red-950/40 hover:bg-red-900/60 text-red-300 font-bold py-4 px-6 rounded-2xl transition-all border border-red-900/50 hover:border-red-500/50 shadow-lg flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
             Clear
           </button>
-          <button id="btn-save" class="flex-[2] btn-custom font-bold py-3 px-4 rounded-xl">
+          <button id="btn-save" class="flex-[2] btn-custom hover:bg-blue-600 font-bold py-4 px-6 text-lg rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2 border border-blue-400/20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             Save to Feed
           </button>
         </div>
-      </div>
-    </div>
 
-    <!-- Feed Screen -->
-    <div id="screen-feed" class="screen hidden flex flex-col items-center gap-6 p-10 rounded-3xl max-w-xl w-full">
-      <header class="flex items-center w-full gap-4">
-        <button class="btn-back bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-lg transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        </button>
-        <h2 class="text-3xl font-bold">Community Feed</h2>
-      </header>
-      <div id="feed-container" class="feed-grid grid grid-cols-3 sm:grid-cols-4 gap-4 w-full">
-        <!-- Images will be injected here -->
       </div>
     </div>
-  </div>
+  </main>
+
   <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
