@@ -57,6 +57,19 @@
           {% endif %}
         {% endwith %}
 
+        <div class="section py-5">
+            <h3>Likes</h3>
+            {% if likes %}
+                <ul>
+                {% for like_id in likes %}
+                    <li>Liked Item ID: {{ like_id }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No likes yet.</p>
+            {% endif %}
+        </div>
+
         <div class="section">
             <h3>Owned Pictures</h3>
             {% if owned_pictures %}
@@ -70,18 +83,7 @@
             {% endif %}
         </div>
 
-        <div class="section">
-            <h3>Likes</h3>
-            {% if likes %}
-                <ul>
-                {% for like_id in likes %}
-                    <li>Liked Item ID: {{ like_id }}</li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p>No likes yet.</p>
-            {% endif %}
-        </div>
+
     </div>
 </body>
 </html>
