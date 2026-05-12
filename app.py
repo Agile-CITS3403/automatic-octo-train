@@ -73,7 +73,9 @@ def upload_picture():
     
     try:
         filename = f"{uuid.uuid4()}.png"
-        filepath = os.path.join('static', 'uploads', filename)
+        upload_dir = os.path.join('static', 'uploads')
+        os.makedirs(upload_dir, exist_ok=True)
+        filepath = os.path.join(upload_dir, filename)
         
         with open(filepath, 'wb') as f:
             f.write(base64.b64decode(image_data))
@@ -82,7 +84,7 @@ def upload_picture():
         db.session.add(new_picture)
         
         # Also update owned_pictures_ids for the user
-        owned_ids = json.loads(current_user.owned_pictures_ids)
+        owned_ids = json.loads(current_user.owned_pictures_ids or '[]')
         # We'll store the filename or ID. Let's store the ID as the field name suggests.
         db.session.flush() # To get the new_picture.id
         owned_ids.append(new_picture.id)
@@ -91,6 +93,9 @@ def upload_picture():
         db.session.commit()
         return json.dumps({'success': True, 'filename': filename}), 201
     except Exception as e:
+        import traceback
+        print(f"UPLOAD ERROR: {str(e)}")
+        traceback.print_exc()
         db.session.rollback()
         return json.dumps({'error': str(e)}), 500
 
@@ -160,7 +165,7 @@ def profile():
         return redirect(url_for('profile'))
     
     owned_pictures = Picture.query.filter_by(user_id=current_user.id).order_by(Picture.created_at.desc()).all()
-    user_likes_ids = json.loads(current_user.likes)
+    user_likes_ids = json.loads(current_user.likes or '[]')
     
     # Prepare owned pictures with like status
     owned_pics_with_status = []
@@ -192,7 +197,7 @@ def profile():
 @login_required
 def feed():
     pictures = Picture.query.order_by(Picture.created_at.desc()).all()
-    user_likes = json.loads(current_user.likes)
+    user_likes = json.loads(current_user.likes or '[]')
     
     pics_with_users = []
     for p in pictures:
@@ -208,7 +213,7 @@ def feed():
 @login_required
 def toggle_like(picture_id):
     picture = Picture.query.get_or_404(picture_id)
-    likes = json.loads(current_user.likes)
+    likes = json.loads(current_user.likes or '[]')
     
     if picture_id in likes:
         likes.remove(picture_id)
