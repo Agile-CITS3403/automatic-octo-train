@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - {{ user.username }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
 <body class="bg-[#101019] text-white min-h-screen flex flex-col">
   {% set active_page = 'profile' %}
   {% include 'navbar.html' %}
@@ -59,15 +57,10 @@
                 
                 {% if owned_pictures %}
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {% for pic in owned_pictures %}
-                        <div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group cursor-pointer shadow-lg">
-                            <div class="aspect-square bg-white relative">
-                                <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" alt="Drawing {{ pic.id }}" class="w-full h-full object-cover pixelated" style="image-rendering: pixelated;">
-                            </div>
-                            <div class="p-3 flex justify-between items-center bg-[#151c45]">
-                                <p class="text-xs text-slate-400 font-mono">ID: {{ pic.id }}</p>
-                            </div>
-                        </div>
+                    {% for item in owned_pictures %}
+                        {% with pic=item.pic, is_liked=item.is_liked %}
+                            {% include 'components/picture_card.html' %}
+                        {% endwith %}
                     {% endfor %}
                     </div>
                 {% else %}
@@ -77,30 +70,71 @@
                 {% endif %}
             </div>
 
-            <!-- Right Column: Likes & Feed Snippets -->
+            <!-- Right Column: Likes -->
             <div class="flex flex-col gap-6">
-                <!-- Likes -->
                 <h2 class="text-2xl font-bold tracking-tighter flex items-center gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rose-400"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     Liked Items
                 </h2>
-                <div class="bg-[#151c45] border border-slate-800 rounded-3xl p-6 shadow-xl">
-                    {% if likes %}
-                        <ul class="flex flex-col gap-3">
-                        {% for like_id in likes %}
-                            <li class="bg-black/20 p-3 rounded-lg border border-white/5 text-slate-300 flex justify-between items-center">
-                                <span>Item ID</span>
-                                <span class="font-mono bg-[#1F2544] px-2 py-1 rounded text-sm">{{ like_id }}</span>
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-slate-400 text-center py-4">No likes yet.</p>
-                    {% endif %}
-                </div>
+                
+                {% if liked_pictures %}
+                    <div class="grid grid-cols-2 gap-4">
+                    {% for item in liked_pictures %}
+                        {% with pic=item.pic, username=item.username, is_liked=item.is_liked %}
+                            {% include 'components/picture_card.html' %}
+                        {% endwith %}
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="bg-[#151c45] border border-slate-800 rounded-3xl p-6 text-center text-slate-400">
+                        No likes yet.
+                    </div>
+                {% endif %}
             </div>
 
         </div>
     </main>
+
+    <!-- Fullscreen Modal -->
+    <div id="fullscreen-modal" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden flex flex-col items-center justify-center p-4" onclick="closeFullscreen()">
+        <button class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[60]" onclick="closeFullscreen()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        
+        <div class="relative group/modal max-w-full max-h-full flex items-center justify-center">
+            <!-- Pixel Grid Overlay -->
+            <div class="absolute inset-0 pointer-events-none z-10 opacity-10" style="background-image: linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px); background-size: calc(100% / 32) calc(100% / 32);"></div>
+            
+            <img id="fullscreen-img" src="" alt="Fullscreen view" 
+                 class="w-[min(90vw,90vh)] aspect-square object-contain shadow-[0_0_50px_rgba(79,70,229,0.3)] rounded-sm" 
+                 style="image-rendering: pixelated; image-rendering: crisp-edges; image-rendering: -moz-crisp-edges;">
+        </div>
+        
+        <p id="fullscreen-desc" class="mt-6 text-slate-400 font-mono text-lg tracking-widest uppercase"></p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/likes.js') }}"></script>
+    <script>
+        function openFullscreen(src, description) {
+            const modal = document.getElementById('fullscreen-modal');
+            const img = document.getElementById('fullscreen-img');
+            const desc = document.getElementById('fullscreen-desc');
+            img.src = src;
+            desc.textContent = description || 'Untitled Art';
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeFullscreen() {
+            const modal = document.getElementById('fullscreen-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = ''; 
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeFullscreen();
+        });
+    </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from migrations import run_all_migrations
 
 load_dotenv()
 
@@ -40,6 +41,7 @@ class User(UserMixin, db.Model):
 class Picture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
@@ -64,22 +66,25 @@ def upload_picture():
         return json.dumps({'error': 'No image data'}), 400
     
     image_data = data['image']
+    description = data.get('description', '')
     # Remove metadata prefix if present (e.g., "data:image/png;base64,")
     if ',' in image_data:
         image_data = image_data.split(',')[1]
     
     try:
         filename = f"{uuid.uuid4()}.png"
-        filepath = os.path.join('static', 'uploads', filename)
+        upload_dir = os.path.join('static', 'uploads')
+        os.makedirs(upload_dir, exist_ok=True)
+        filepath = os.path.join(upload_dir, filename)
         
         with open(filepath, 'wb') as f:
             f.write(base64.b64decode(image_data))
         
-        new_picture = Picture(filename=filename, user_id=current_user.id)
+        new_picture = Picture(filename=filename, user_id=current_user.id, description=description)
         db.session.add(new_picture)
         
         # Also update owned_pictures_ids for the user
-        owned_ids = json.loads(current_user.owned_pictures_ids)
+        owned_ids = json.loads(current_user.owned_pictures_ids or '[]')
         # We'll store the filename or ID. Let's store the ID as the field name suggests.
         db.session.flush() # To get the new_picture.id
         owned_ids.append(new_picture.id)
@@ -88,6 +93,9 @@ def upload_picture():
         db.session.commit()
         return json.dumps({'success': True, 'filename': filename}), 201
     except Exception as e:
+        import traceback
+        print(f"UPLOAD ERROR: {str(e)}")
+        traceback.print_exc()
         db.session.rollback()
         return json.dumps({'error': str(e)}), 500
 
@@ -156,19 +164,72 @@ def profile():
         flash('Profile updated successfully!')
         return redirect(url_for('profile'))
     
-    # Get Picture objects instead of just IDs
     owned_pictures = Picture.query.filter_by(user_id=current_user.id).order_by(Picture.created_at.desc()).all()
-    likes = json.loads(current_user.likes)
+    user_likes_ids = json.loads(current_user.likes or '[]')
     
-    return render_template('profile.html', user=current_user, owned_pictures=owned_pictures, likes=likes)
+    # Prepare owned pictures with like status
+    owned_pics_with_status = []
+    for p in owned_pictures:
+        owned_pics_with_status.append({
+            'pic': p,
+            'is_liked': p.id in user_likes_ids
+        })
+    
+    # Fetch liked pictures objects
+    liked_pictures_objs = Picture.query.filter(Picture.id.in_(user_likes_ids)).all() if user_likes_ids else []
+    
+    # Map them with username and like status (always true here)
+    liked_pics_with_status = []
+    for p in liked_pictures_objs:
+        u = User.query.get(p.user_id)
+        liked_pics_with_status.append({
+            'pic': p,
+            'username': u.username if u else 'Unknown',
+            'is_liked': True
+        })
+    
+    return render_template('profile.html', 
+                         user=current_user, 
+                         owned_pictures=owned_pics_with_status, 
+                         liked_pictures=liked_pics_with_status)
 
 @app.route('/feed')
 @login_required
 def feed():
-    return render_template('feed.html')
+    pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+    user_likes = json.loads(current_user.likes or '[]')
+    
+    pics_with_users = []
+    for p in pictures:
+        u = User.query.get(p.user_id)
+        pics_with_users.append({
+            'pic': p, 
+            'username': u.username if u else 'Unknown',
+            'is_liked': p.id in user_likes
+        })
+    return render_template('feed.html', pictures=pics_with_users)
+
+@app.route('/api/like/<int:picture_id>', methods=['POST'])
+@login_required
+def toggle_like(picture_id):
+    picture = Picture.query.get_or_404(picture_id)
+    likes = json.loads(current_user.likes or '[]')
+    
+    if picture_id in likes:
+        likes.remove(picture_id)
+        is_liked = False
+    else:
+        likes.append(picture_id)
+        is_liked = True
+        
+    current_user.likes = json.dumps(likes)
+    db.session.commit()
+    
+    return json.dumps({'success': True, 'is_liked': is_liked}), 200
 
 with app.app_context():
     db.create_all()
+    run_all_migrations()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
