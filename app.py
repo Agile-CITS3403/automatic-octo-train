@@ -111,7 +111,7 @@ def get_pictures():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('draw'))
+        return redirect(url_for('feed'))
     
     if request.method == 'POST':
         username = request.form.get('username')
@@ -129,7 +129,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
-        return redirect(url_for('draw'))
+        return redirect(url_for('feed'))
 
     if request.method == 'POST':
         username = request.form.get('username')
