@@ -1272,7 +1272,9 @@ a:hover {
   color: white;
   padding: 10px 18px;
   border-radius: 25px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .btn-custom:hover {
   background-color: #2a3675;
