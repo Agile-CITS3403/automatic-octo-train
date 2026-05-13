@@ -209,6 +209,31 @@ def feed():
         })
     return render_template('feed.html', pictures=pics_with_users)
 
+@app.route('/picture/<int:picture_id>')
+def view_picture(picture_id):
+    picture = Picture.query.get_or_404(picture_id)
+    u = User.query.get(picture.user_id)
+    
+    is_liked = False
+    if current_user.is_authenticated:
+        user_likes = json.loads(current_user.likes or '[]')
+        is_liked = picture_id in user_likes
+    
+    # Context-aware back button
+    back_url = url_for('feed')
+    back_label = 'Back to Feed'
+    referrer = request.referrer
+    if referrer and '/profile' in referrer:
+        back_url = url_for('profile')
+        back_label = 'Back to Profile'
+        
+    return render_template('picture_view.html', 
+                         pic=picture, 
+                         username=u.username if u else 'Unknown', 
+                         is_liked=is_liked,
+                         back_url=back_url,
+                         back_label=back_label)
+
 @app.route('/api/like/<int:picture_id>', methods=['POST'])
 @login_required
 def toggle_like(picture_id):
