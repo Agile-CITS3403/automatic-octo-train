@@ -1,15 +1,64 @@
 # LowRezGram
-This is the repo for the group project for cits3403 - Agile Web Development.
+This is the repo for the group project for CITS3403 - Agile Web Development.
 
 ## Project Description
-Essentially, the website is a very simple clone of Instagram but instead of posting high resolution photos, we provide a small canvas to users to create pixel art. These created "art pieces" can then be shared and showcased on LowRezGram's community feed.
+LowRezGram is a pixel art social app. Users create drawings on a 32x32 canvas, upload them to the server, and explore a community feed with likes and profile galleries.
 
-## List of features
+## List of Features
+- User authentication (sign up, log in, log out)
+- Drawing studio with a fixed 32x32 canvas and curated palette
+- Upload drawings to the server with an optional description
+- Community feed with fullscreen viewing and pixel-grid overlay
+- Likes system with per-user like tracking
+- Profile page showing owned pictures and liked items
+- Lightweight migrations runner for evolving the SQLite schema
 
-## Technologies used
+## Technologies Used
+- Backend: Flask, Flask-Login, Flask-SQLAlchemy, SQLite
+- Frontend: HTML, Tailwind CSS (CLI build), vanilla JS
+- Tooling: Python-dotenv, Tailwind CLI
 
-## The flow of the user experience
+## The Flow of the User Experience
+1. Land on the home page and sign up or log in.
+2. Browse the feed or open the drawing studio.
+3. Draw on the 32x32 canvas and save to upload.
+4. View new uploads in the feed or on your profile.
+5. Like drawings to curate your liked items list.
 
-## Important design decisions
+## Important Design Decisions
+- Keep the drawing grid fixed at 32x32 for a consistent pixel-art look.
+- Store drawings as PNGs in static uploads for quick retrieval.
+- Provide a simple like toggle instead of complex social graphs.
+- Keep the UI focused on drawing and browsing.
 
-### Additional info
+## Setup and Running
+
+### Python
+1. Create and activate a virtual environment.
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run the app:
+   ```bash
+   python app.py
+   ```
+   The app runs on http://localhost:5001.
+
+### CSS Build (Tailwind)
+1. Install Node dependencies:
+   ```bash
+   npm install
+   ```
+2. Build CSS once:
+   ```bash
+   npm run build:css
+   ```
+3. Or run the watcher during development:
+   ```bash
+   npm run dev:css
+   ```
+
+## Notes
+- Set `SECRET_KEY` in your environment for production use.
+- Database migrations run automatically on app startup.
