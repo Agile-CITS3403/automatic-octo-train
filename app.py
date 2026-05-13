@@ -230,6 +230,8 @@ def toggle_like(picture_id):
 with app.app_context():
     db.create_all()
     run_all_migrations()
+    from seed_data import seed_database
+    seed_database()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
