@@ -6,7 +6,7 @@
 | 23913198      | Nicholas Evan Anargya | kepepsi |
 
 
-# LowRezGram
+# LowResGram
 This is the repo for the group project for CITS3403 - Agile Web Development.
 
 ## Project Description
