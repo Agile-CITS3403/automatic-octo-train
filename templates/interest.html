@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>LowResGram | Choose Interests</title>
   <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -14,28 +15,15 @@
       <h1 class="text-3xl font-bold mb-4">Choose your interests</h1>
       <p class="text-slate-300 mb-8">Select what you're into so LowResGram can personalise your feed.</p>
 
-      <form>
+      <form method="POST" action="{{ url_for('interests') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="grid grid-cols-2 gap-4 mb-8 text-left">
+          {% for interest in interest_options %}
           <label class="bg-black/20 p-4 rounded-xl border border-slate-700/50 flex items-center gap-3 cursor-pointer hover:border-slate-500 transition-colors">
-            <input type="checkbox" name="interests" value="Gaming" class="w-5 h-5 accent-blue-600 bg-slate-800 border-slate-600 rounded"> 
-            Gaming
+            <input type="checkbox" name="interests" value="{{ interest.id }}" class="w-5 h-5 accent-blue-600 bg-slate-800 border-slate-600 rounded" {% if interest.id in selected_ids %}checked{% endif %}> 
+            {{ interest.name }}
           </label>
-          <label class="bg-black/20 p-4 rounded-xl border border-slate-700/50 flex items-center gap-3 cursor-pointer hover:border-slate-500 transition-colors">
-            <input type="checkbox" name="interests" value="Memes" class="w-5 h-5 accent-blue-600 bg-slate-800 border-slate-600 rounded"> 
-            Memes
-          </label>
-          <label class="bg-black/20 p-4 rounded-xl border border-slate-700/50 flex items-center gap-3 cursor-pointer hover:border-slate-500 transition-colors">
-            <input type="checkbox" name="interests" value="Art" class="w-5 h-5 accent-blue-600 bg-slate-800 border-slate-600 rounded"> 
-            Art
-          </label>
-          <label class="bg-black/20 p-4 rounded-xl border border-slate-700/50 flex items-center gap-3 cursor-pointer hover:border-slate-500 transition-colors">
-            <input type="checkbox" name="interests" value="Food" class="w-5 h-5 accent-blue-600 bg-slate-800 border-slate-600 rounded"> 
-            Food
-          </label>
-          <label class="bg-black/20 p-4 rounded-xl border border-slate-700/50 flex items-center gap-3 cursor-pointer hover:border-slate-500 transition-colors">
-            <input type="checkbox" name="interests" value="Anime" class="w-5 h-5 accent-blue-600 bg-slate-800 border-slate-600 rounded"> 
-            Anime
-          </label>
+          {% endfor %}
         </div>
 
         <button type="submit" class="btn-custom w-full font-bold py-4 px-6 rounded-2xl shadow-lg transition-all text-lg mb-4">Save interests</button>
