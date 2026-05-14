@@ -51,7 +51,7 @@ LowRezGram is a pixel art social app. Users create drawings on a 32x32 canvas, u
    ```bash
    python app.py
    ```
-   The app runs on http://localhost:5001.
+   The app runs on http://localhost:5000.
 
 ### CSS Build (Tailwind) - only for development, not necessary for deployment
 1. Install Node dependencies:
