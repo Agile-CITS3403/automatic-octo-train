@@ -1,9 +1,9 @@
-<div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group shadow-lg flex flex-col h-full relative">
-    <a href="{{ url_for('view_picture', picture_id=pic.id) }}" class="aspect-square bg-[#0d1333] relative overflow-hidden">
+<div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group shadow-lg flex flex-col h-full relative" style="-webkit-transform: translateZ(0);">
+    <a href="{{ url_for('view_picture', picture_id=pic.id) }}" class="aspect-square bg-[#0d1333] relative overflow-hidden block" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
         <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" 
              alt="{{ pic.description or 'Untitled Art' }}" 
-             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-             style="image-rendering: pixelated;">
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 will-change-transform" 
+             style="image-rendering: pixelated; -webkit-backface-visibility: hidden; -webkit-transform: translateZ(0);">
              
         <!-- Hover Hint -->
         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
@@ -18,8 +18,8 @@
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
         </svg>
     </button>
-    <div class="p-4 flex flex-col justify-between bg-[#151c45] flex-1">
-        <div>
+    <div class="p-4 flex flex-col justify-between bg-[#151c45] flex-1" style="-webkit-transform: translateZ(0); -webkit-backface-visibility: hidden;">
+        <div style="-webkit-transform: translateZ(0);">
             <h5 class="text-lg font-semibold overflow-wrap-anywhere break-words text-slate-100 line-clamp-2">
                 {{ pic.description or 'Untitled Art' }}
             </h5>
