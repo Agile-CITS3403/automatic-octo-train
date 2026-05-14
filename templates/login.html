@@ -22,6 +22,7 @@
       {% endwith %}
 
       <form method="POST" class="flex flex-col gap-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input class="w-full bg-[#1F2544] text-white px-4 py-3 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500" type="text" name="username" placeholder="Username" required>
         <input class="w-full bg-[#1F2544] text-white px-4 py-3 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500" type="password" name="password" placeholder="Password" required>
         <button class="btn-custom w-full border-0 mt-2 py-3" type="submit">Log in</button>
