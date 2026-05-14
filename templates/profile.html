@@ -18,14 +18,43 @@
         <div class="bg-[#151c45] border border-slate-800 rounded-3xl p-6 md:p-10 mb-8 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div class="flex items-center gap-6">
                 <!-- Avatar Placeholder -->
-                <div class="w-24 h-24 md:w-32 md:h-32 bg-indigo-900 rounded-full border-4 border-[#1F2544] flex items-center justify-center text-4xl font-bold text-indigo-300">
+                <div class="w-24 h-24 md:w-32 md:h-32 bg-indigo-900 rounded-full border-4 border-[#1F2544] flex items-center justify-center text-4xl font-bold text-indigo-300 shrink-0">
                     {{ user.username[0] | upper }}
                 </div>
-                <div>
-                    <h1 class="text-4xl md:text-5xl font-bold tracking-tighter">{{ user.username }}</h1>
-                    <p class="text-slate-400 mt-2 max-w-md">profile Description inject here. Aspiring pixel artist, chaotic vibe curator.</p>
+                <!-- Profile Info & Edit Form -->
+                <div class="flex-1 w-full">
+                    <div class="flex justify-between items-start">
+                        <h1 class="text-4xl md:text-5xl font-bold tracking-tighter">{{ user.username }}</h1>
+                        <button id="edit-profile-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Edit Profile</button>
+                    </div>
+                    
+                    <!-- Display Profile Bio -->
+                    <p id="profile-bio-display" class="text-slate-400 mt-2 max-w-md whitespace-pre-wrap">{{ user.profile_description or 'No profile description provided yet.' }}</p>
+
+                    <!-- Edit Profile Form (Hidden by default) -->
+                    <form id="profile-edit-form" method="POST" action="{{ url_for('profile') }}" class="hidden mt-4 max-w-md flex flex-col gap-3">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <textarea name="profile_description" rows="3" class="w-full bg-[#1F2544] text-white px-4 py-3 rounded-xl border border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-500" placeholder="Write something about yourself...">{{ user.profile_description }}</textarea>
+                        <div class="flex gap-2">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Save</button>
+                            <button type="button" id="cancel-edit-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+            <script>
+                document.getElementById('edit-profile-btn').addEventListener('click', function() {
+                    this.classList.add('hidden');
+                    document.getElementById('profile-bio-display').classList.add('hidden');
+                    document.getElementById('profile-edit-form').classList.remove('hidden');
+                });
+                document.getElementById('cancel-edit-btn').addEventListener('click', function() {
+                    document.getElementById('edit-profile-btn').classList.remove('hidden');
+                    document.getElementById('profile-bio-display').classList.remove('hidden');
+                    document.getElementById('profile-edit-form').classList.add('hidden');
+                });
+            </script>
 
             <div class="bg-black/20 p-4 rounded-2xl border border-white/5 min-w-[200px]">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Interests</h3>
