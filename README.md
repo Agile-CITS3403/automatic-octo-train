@@ -1,3 +1,11 @@
+| UWA ID        | Name                  | Github Username  |
+| ------------- |:----------------------| :-----|
+| 22615371      | Ziri Wang             |        |
+| 24537803      | Dean Sing Fat         | DSF100 |
+| 24185633      | Ruslan Veselov        | rakkateichou |
+| 23913198      | Nicholas Evan Anargya | kepepsi |
+
+
 # LowRezGram
 This is the repo for the group project for CITS3403 - Agile Web Development.
 
