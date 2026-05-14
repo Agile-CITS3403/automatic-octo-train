@@ -1,9 +1,9 @@
-<div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group shadow-lg flex flex-col h-full relative" style="-webkit-transform: translateZ(0);">
-    <a href="{{ url_for('view_picture', picture_id=pic.id) }}" class="aspect-square bg-[#0d1333] relative overflow-hidden block" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
+<div class="bg-[#1a214d] rounded-xl overflow-hidden border border-slate-700/50 hover:border-slate-500 transition-colors group shadow-lg flex flex-col h-full relative">
+    <a href="{{ url_for('view_picture', picture_id=pic.id) }}" class="aspect-square bg-[#0d1333] relative overflow-hidden">
         <img src="{{ url_for('static', filename='uploads/' + pic.filename) }}" 
              alt="{{ pic.description or 'Untitled Art' }}" 
-             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 will-change-transform" 
-             style="image-rendering: pixelated; -webkit-backface-visibility: hidden; -webkit-transform: translateZ(0);">
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+             style="image-rendering: pixelated;">
              
         <!-- Hover Hint -->
         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
