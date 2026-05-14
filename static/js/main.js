@@ -136,10 +136,12 @@ btnSave.addEventListener('click', async () => {
   const description = descInput ? descInput.value : '';
   
   try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const response = await fetch('/api/upload', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
       },
       body: JSON.stringify({ image: dataURL, description: description })
     });
