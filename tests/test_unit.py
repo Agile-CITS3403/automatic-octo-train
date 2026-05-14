@@ -67,7 +67,7 @@ def test_profile_auth_required(client):
     """Test that the profile page requires authentication."""
     response = client.get('/profile', follow_redirects=True)
     assert response.request.path == '/login' # Redirected to login
-    assert b'login' in response.data.lower()
+    assert b'log in' in response.data.lower() or b'sign in' in response.data.lower()
 
 def test_interest_update(client):
     """Test updating user interests."""

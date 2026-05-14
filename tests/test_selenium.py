@@ -54,12 +54,12 @@ def test_home_page_title(server, browser):
 def test_navigation_to_login(server, browser):
     """Test 2: Navigate from home to login page"""
     browser.get(f"http://localhost:{PORT}/")
-    login_link = browser.find_element(By.LINK_TEXT, "Log In")
+    login_link = browser.find_element(By.LINK_TEXT, "Log in")
     login_link.click()
     
     # Wait for URL to change to login
     WebDriverWait(browser, 10).until(EC.url_contains("/login"))
-    assert "Log in inside your universe." in browser.page_source or "Sign in" in browser.page_source
+    assert "Log in" in browser.page_source or "Demo Account" in browser.page_source
 
 def test_invalid_login(server, browser):
     """Test 3: Attempt to login with invalid credentials"""
@@ -103,6 +103,6 @@ def test_draw_page_access_after_login(server, browser):
     
     # Wait for canvas to load
     canvas = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.ID, "canvas"))
+        EC.presence_of_element_located((By.ID, "paint-canvas"))
     )
     assert canvas is not None

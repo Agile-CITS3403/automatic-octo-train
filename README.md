@@ -67,6 +67,19 @@ LowRezGram is a pixel art social app. Users create drawings on a 32x32 canvas, u
    npm run dev:css
    ```
 
+## Testing
+The application includes both Unit tests (using Pytest) and End-to-End UI tests (using Selenium).
+
+1. Ensure your virtual environment is activated and testing dependencies are installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Run the test suite:
+   ```bash
+   python -m pytest tests/ -v
+   ```
+   *Note: The Selenium tests run in a headless Chrome browser, so ensure you have Google Chrome installed on your machine.*
+
 ## Notes
 - Set `SECRET_KEY` in your environment for production use.
 - Database migrations run automatically on app startup.
