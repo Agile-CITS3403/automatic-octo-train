@@ -10,6 +10,25 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from migrations import run_all_migrations
 
+INTEREST_OPTIONS = [
+    'Music',
+    'Fashion',
+    'Gaming',
+    'Memes',
+    'Photography',
+    'Art',
+    'Food',
+    'Sports',
+    'Cars',
+    'Anime',
+    'Movies',
+    'Campus life',
+    'Study',
+    'Travel',
+    'Fitness',
+    'Tech'
+]
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -24,6 +43,12 @@ login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 # User Model
+user_interests = db.Table(
+    'user_interest',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('interest_id', db.Integer, db.ForeignKey('interest.id'), primary_key=True)
+)
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -32,6 +57,7 @@ class User(UserMixin, db.Model):
     owned_pictures_ids = db.Column(db.Text, default='[]')
     profile_description = db.Column(db.Text, default='')
     likes = db.Column(db.Text, default='[]')
+    interests = db.relationship('Interest', secondary=user_interests, back_populates='users')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -40,12 +66,31 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 # Picture Model
+picture_interest = db.Table(
+    'picture_interest',
+    db.Column('picture_id', db.Integer, db.ForeignKey('picture.id'), primary_key=True),
+    db.Column('interest_id', db.Integer, db.ForeignKey('interest.id'), primary_key=True)
+)
+
 class Picture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    tags = db.relationship('Interest', secondary=picture_interest, backref='pictures')
+
+class Interest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    users = db.relationship('User', secondary=user_interests, back_populates='interests')
+
+def ensure_interests():
+    existing = {interest.name for interest in Interest.query.all()}
+    missing = [name for name in INTEREST_OPTIONS if name not in existing]
+    if missing:
+        db.session.add_all([Interest(name=name) for name in missing])
+        db.session.commit()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -58,7 +103,9 @@ def home():
 @app.route('/draw')
 @login_required
 def draw():
-    return render_template('index.html')
+    ensure_interests()
+    interests = Interest.query.order_by(Interest.name.asc()).all()
+    return render_template('index.html', interests=interests)
 
 @app.route('/api/upload', methods=['POST'])
 @login_required
@@ -83,6 +130,12 @@ def upload_picture():
             f.write(base64.b64decode(image_data))
         
         new_picture = Picture(filename=filename, user_id=current_user.id, description=description)
+        
+        tags = data.get('tags', [])
+        if tags:
+            selected_interests = Interest.query.filter(Interest.id.in_(tags)).all()
+            new_picture.tags = selected_interests
+
         db.session.add(new_picture)
         
         # Also update owned_pictures_ids for the user
@@ -147,7 +200,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
-            return redirect(url_for('feed'))
+            return redirect(url_for('interests'))
             
     return render_template('signup.html')
 
@@ -195,10 +248,36 @@ def profile():
                          owned_pictures=owned_pics_with_status, 
                          liked_pictures=liked_pics_with_status)
 
+@app.route('/interests', methods=['GET', 'POST'])
+@login_required
+def interests():
+    ensure_interests()
+    if request.method == 'POST':
+        selected_ids = request.form.getlist('interests')
+        selected_ids = [int(i) for i in selected_ids if i.isdigit()]
+        selected_interests = Interest.query.filter(Interest.id.in_(selected_ids)).all()
+        current_user.interests = selected_interests
+        db.session.commit()
+        flash('Interests updated successfully!')
+        return redirect(url_for('profile'))
+
+    interest_options = Interest.query.order_by(Interest.name.asc()).all()
+    selected_ids = {interest.id for interest in current_user.interests}
+    return render_template('interest.html',
+                           interest_options=interest_options,
+                           selected_ids=selected_ids)
+
 @app.route('/feed')
 @login_required
 def feed():
-    pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+    filter_mode = request.args.get('filter', 'all')
+    
+    if filter_mode == 'for_you' and current_user.interests:
+        user_interest_ids = [i.id for i in current_user.interests]
+        pictures = Picture.query.filter(Picture.tags.any(Interest.id.in_(user_interest_ids))).order_by(Picture.created_at.desc()).all()
+    else:
+        pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+        
     user_likes = json.loads(current_user.likes or '[]')
     
     pics_with_users = []
@@ -209,7 +288,7 @@ def feed():
             'username': u.username if u else 'Unknown',
             'is_liked': p.id in user_likes
         })
-    return render_template('feed.html', pictures=pics_with_users)
+    return render_template('feed.html', pictures=pics_with_users, filter_mode=filter_mode, has_interests=bool(current_user.interests))
 
 @app.route('/picture/<int:picture_id>')
 def view_picture(picture_id):
@@ -257,6 +336,7 @@ def toggle_like(picture_id):
 with app.app_context():
     db.create_all()
     run_all_migrations()
+    ensure_interests()
     from seed_data import seed_database
     seed_database()
 

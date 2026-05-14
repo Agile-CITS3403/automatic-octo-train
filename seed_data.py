@@ -119,7 +119,7 @@ def generate_random_art(seed_val):
     return pixels
 
 def seed_database():
-    from app import db, User, Picture
+    from app import db, User, Picture, Interest
     
     # 1. Create a sample user if none exists
     if not User.query.filter_by(username='pixel_artist').first():
@@ -134,6 +134,15 @@ def seed_database():
     
     user = User.query.filter_by(username='pixel_artist').first()
 
+    if user and not user.interests:
+        sample_interests = Interest.query.filter(Interest.name.in_([
+            'Art',
+            'Photography',
+            'Tech'
+        ])).all()
+        user.interests = sample_interests
+        db.session.commit()
+
     # 2. Add sample pictures if the table is empty
     if not Picture.query.first():
         print("Generating 20 sample artworks...")
@@ -141,6 +150,7 @@ def seed_database():
         
         adjectives = ["Cosmic", "Neon", "Cyber", "Retro", "Digital", "Abstract", "Techno", "Vivid"]
         nouns = ["Dream", "Wave", "Grid", "Portal", "Logic", "Pulse", "Zenith", "Flow"]
+        all_interests = Interest.query.all()
         
         for i in range(20):
             filename = f'seed_art_{i}.png'
@@ -157,6 +167,10 @@ def seed_database():
                 description=desc,
                 user_id=user.id
             )
+
+            if all_interests:
+                pic.tags = random.sample(all_interests, k=random.randint(0, 3))
+
             db.session.add(pic)
             db.session.flush() # Get ID
             owned_ids.append(pic.id)

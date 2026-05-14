@@ -26,6 +26,14 @@
             {% if username %}
             <p class="text-sm text-indigo-300 font-mono mt-1 opacity-80 group-hover:opacity-100 transition-opacity">@{{ username }}</p>
             {% endif %}
+            
+            {% if pic.tags %}
+            <div class="flex flex-wrap gap-1 mt-2">
+                {% for tag in pic.tags %}
+                <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-blue-900/30 text-blue-300 border border-blue-800/50">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
