@@ -270,7 +270,14 @@ def interests():
 @app.route('/feed')
 @login_required
 def feed():
-    pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+    filter_mode = request.args.get('filter', 'all')
+    
+    if filter_mode == 'for_you' and current_user.interests:
+        user_interest_ids = [i.id for i in current_user.interests]
+        pictures = Picture.query.filter(Picture.tags.any(Interest.id.in_(user_interest_ids))).order_by(Picture.created_at.desc()).all()
+    else:
+        pictures = Picture.query.order_by(Picture.created_at.desc()).all()
+        
     user_likes = json.loads(current_user.likes or '[]')
     
     pics_with_users = []
@@ -281,7 +288,7 @@ def feed():
             'username': u.username if u else 'Unknown',
             'is_liked': p.id in user_likes
         })
-    return render_template('feed.html', pictures=pics_with_users)
+    return render_template('feed.html', pictures=pics_with_users, filter_mode=filter_mode, has_interests=bool(current_user.interests))
 
 @app.route('/picture/<int:picture_id>')
 def view_picture(picture_id):
