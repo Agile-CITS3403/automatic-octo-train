@@ -19,12 +19,12 @@ async function toggleLike(btn, pictureId) {
         const svg = btn.querySelector('svg');
         
         if (data.is_liked) {
-            btn.classList.remove('text-white');
-            btn.classList.add('text-rose-500');
+            btn.classList.remove('text-white', 'bg-white/5', 'border-white/10');
+            btn.classList.add('text-rose-500', 'bg-rose-500/10', 'border-rose-500/50');
             svg.setAttribute('fill', 'currentColor');
         } else {
-            btn.classList.remove('text-rose-500');
-            btn.classList.add('text-white');
+            btn.classList.remove('text-rose-500', 'bg-rose-500/10', 'border-rose-500/50');
+            btn.classList.add('text-white', 'bg-white/5', 'border-white/10');
             svg.setAttribute('fill', 'none');
         }
 
