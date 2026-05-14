@@ -29,7 +29,7 @@
 
           <!-- Content Info -->
           <div class="mt-8 w-full max-w-2xl text-center">
-              <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-2">{{ pic.description or 'Untitled Art' }}</h1>
+              <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-2 break-words">{{ pic.description or 'Untitled Art' }}</h1>
               <p class="text-indigo-300 font-mono text-xl mb-4">@{{ username }}</p>
 
               {% if pic.tags %}
