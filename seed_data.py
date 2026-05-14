@@ -150,6 +150,7 @@ def seed_database():
         
         adjectives = ["Cosmic", "Neon", "Cyber", "Retro", "Digital", "Abstract", "Techno", "Vivid"]
         nouns = ["Dream", "Wave", "Grid", "Portal", "Logic", "Pulse", "Zenith", "Flow"]
+        all_interests = Interest.query.all()
         
         for i in range(20):
             filename = f'seed_art_{i}.png'
@@ -166,6 +167,10 @@ def seed_database():
                 description=desc,
                 user_id=user.id
             )
+
+            if all_interests:
+                pic.tags = random.sample(all_interests, k=random.randint(0, 3))
+
             db.session.add(pic)
             db.session.flush() # Get ID
             owned_ids.append(pic.id)

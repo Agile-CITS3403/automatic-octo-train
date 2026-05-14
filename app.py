@@ -66,12 +66,19 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 # Picture Model
+picture_interest = db.Table(
+    'picture_interest',
+    db.Column('picture_id', db.Integer, db.ForeignKey('picture.id'), primary_key=True),
+    db.Column('interest_id', db.Integer, db.ForeignKey('interest.id'), primary_key=True)
+)
+
 class Picture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    tags = db.relationship('Interest', secondary=picture_interest, backref='pictures')
 
 class Interest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -96,7 +103,9 @@ def home():
 @app.route('/draw')
 @login_required
 def draw():
-    return render_template('index.html')
+    ensure_interests()
+    interests = Interest.query.order_by(Interest.name.asc()).all()
+    return render_template('index.html', interests=interests)
 
 @app.route('/api/upload', methods=['POST'])
 @login_required
@@ -121,6 +130,12 @@ def upload_picture():
             f.write(base64.b64decode(image_data))
         
         new_picture = Picture(filename=filename, user_id=current_user.id, description=description)
+        
+        tags = data.get('tags', [])
+        if tags:
+            selected_interests = Interest.query.filter(Interest.id.in_(tags)).all()
+            new_picture.tags = selected_interests
+
         db.session.add(new_picture)
         
         # Also update owned_pictures_ids for the user

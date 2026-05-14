@@ -30,7 +30,17 @@
           <!-- Content Info -->
           <div class="mt-8 w-full max-w-2xl text-center">
               <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-2">{{ pic.description or 'Untitled Art' }}</h1>
-              <p class="text-indigo-300 font-mono text-xl mb-8">@{{ username }}</p>
+              <p class="text-indigo-300 font-mono text-xl mb-4">@{{ username }}</p>
+
+              {% if pic.tags %}
+              <div class="flex justify-center flex-wrap gap-2 mb-8">
+                  {% for tag in pic.tags %}
+                  <span class="text-xs uppercase font-bold tracking-wider px-3 py-1 rounded-lg bg-blue-900/30 text-blue-300 border border-blue-800/50">{{ tag.name }}</span>
+                  {% endfor %}
+              </div>
+              {% else %}
+              <div class="mb-4"></div>
+              {% endif %}
 
               <!-- Actions -->
               <div class="flex flex-wrap justify-center gap-4">

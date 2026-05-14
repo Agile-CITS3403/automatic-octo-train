@@ -135,6 +135,9 @@ btnSave.addEventListener('click', async () => {
   const descInput = document.getElementById('pic-description');
   const description = descInput ? descInput.value : '';
   
+  const tagsInputs = document.querySelectorAll('.pic-tags:checked');
+  const tags = Array.from(tagsInputs).map(cb => parseInt(cb.value));
+  
   try {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const response = await fetch('/api/upload', {
@@ -143,7 +146,7 @@ btnSave.addEventListener('click', async () => {
         'Content-Type': 'application/json',
         'X-CSRFToken': csrfToken
       },
-      body: JSON.stringify({ image: dataURL, description: description })
+      body: JSON.stringify({ image: dataURL, description: description, tags: tags })
     });
     
     if (!response.ok) throw new Error('Failed to upload');
